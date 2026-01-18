@@ -1,7 +1,7 @@
 <div class="article-page">
   @if (article()) {
-    <h1>{{ article().title }}</h1>
-    <div class="content">{{ article().content }}</div>
+    <h1>{{ article()?.title }}</h1>
+    <div class="content" [innerHTML]="htmlContent()"></div>
   } @else {
     <p>Loading article...</p>
   }

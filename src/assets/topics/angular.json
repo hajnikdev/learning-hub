@@ -5,17 +5,12 @@
     {
       "id": "basics",
       "title": "Basics",
-      "articles": [
-        { "id": "angular-intro" },
-        { "id": "angular-components" }
-      ]
+      "articles": []
     },
     {
       "id": "advanced",
       "title": "Advanced Topics",
-      "articles": [
-        { "id": "angular-ssr" }
-      ]
+      "articles": [{ "id": "angular-routing" }]
     }
   ]
 }

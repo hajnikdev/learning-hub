@@ -1,6 +1,0 @@
-{
-  "id": "angular-ssr",
-  "title": "Server-Side Rendering (SSR)",
-  "theme": "advanced",
-  "content": "SSR allows Angular applications to be rendered on the server, improving performance and SEO."
-}
