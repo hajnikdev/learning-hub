@@ -1,0 +1,17 @@
+{
+  "id": "git",
+  "title": "Git",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [
+        {
+          "id": "intro",
+          "title": "Introduction to Git",
+          "content": "Git is a distributed version control system that helps developers collaborate and keep track of code changes."
+        }
+      ]
+    }
+  ]
+}

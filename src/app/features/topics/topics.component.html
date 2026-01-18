@@ -1,0 +1,19 @@
+<div class="topic-page">
+  <h1>{{ topic()?.title }}</h1>
+  @if (topic()) {
+    @for (section of topic()?.sections; track section.id) {
+      <div class="section">
+        <h2>{{ section.title }}</h2>
+        <div class="articles">
+          @for (article of section.articles; track article.id) {
+            <div class="article" (click)="goToArticle(article.id)" style="cursor:pointer;">
+              <h3>{{ article.id }}</h3>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  } @else {
+    <p>Loading topic...</p>
+  }
+</div>

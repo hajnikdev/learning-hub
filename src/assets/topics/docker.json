@@ -1,0 +1,17 @@
+{
+  "id": "docker",
+  "title": "Docker",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [
+        {
+          "id": "intro",
+          "title": "Introduction to Docker",
+          "content": "Docker is a platform designed to help developers build, share, and run modern applications."
+        }
+      ]
+    }
+  ]
+}

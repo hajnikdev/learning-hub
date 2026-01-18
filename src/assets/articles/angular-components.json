@@ -1,0 +1,6 @@
+{
+  "id": "angular-components",
+  "title": "Angular Components",
+  "theme": "basics",
+  "content": "Components are the main building block for Angular applications. Each component consists of an HTML template and a TypeScript class."
+}

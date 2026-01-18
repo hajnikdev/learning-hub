@@ -1,0 +1,17 @@
+{
+  "id": "react",
+  "title": "React",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [
+        {
+          "id": "intro",
+          "title": "Introduction to React",
+          "content": "React is a JavaScript library for building user interfaces. It lets you compose complex UIs from small and isolated pieces of code called components."
+        }
+      ]
+    }
+  ]
+}

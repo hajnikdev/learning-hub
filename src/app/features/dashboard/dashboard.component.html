@@ -1,0 +1,13 @@
+<div class="dashboard">
+  <h1>Learning Hub Dashboard</h1>
+  <div class="topics-list">
+    @for (topic of topics(); track topic.id) {
+      <a class="topic-card" [routerLink]="['/topic', topic.id]">
+        @if (topic.icon) {
+          <img [src]="'assets/icons/' + topic.icon" [alt]="topic.title" width="48" height="48" />
+        }
+        <div class="topic-title">{{ topic.title }}</div>
+      </a>
+    }
+  </div>
+</div>

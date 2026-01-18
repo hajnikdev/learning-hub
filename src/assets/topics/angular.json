@@ -1,0 +1,21 @@
+{
+  "id": "angular",
+  "title": "Angular",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [
+        { "id": "angular-intro" },
+        { "id": "angular-components" }
+      ]
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced Topics",
+      "articles": [
+        { "id": "angular-ssr" }
+      ]
+    }
+  ]
+}

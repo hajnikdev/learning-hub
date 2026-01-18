@@ -1,0 +1,22 @@
+[
+  {
+    "id": "angular",
+    "title": "Angular"
+  },
+  {
+    "id": "react",
+    "title": "React"
+  },
+  {
+    "id": "dotnet",
+    "title": ".NET"
+  },
+  {
+    "id": "git",
+    "title": "Git"
+  },
+  {
+    "id": "docker",
+    "title": "Docker"
+  }
+]

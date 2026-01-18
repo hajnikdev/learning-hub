@@ -1,0 +1,17 @@
+{
+  "id": "dotnet",
+  "title": ".NET",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [
+        {
+          "id": "intro",
+          "title": "Introduction to .NET",
+          "content": ".NET is a free, cross-platform, open source developer platform for building many different types of applications."
+        }
+      ]
+    }
+  ]
+}
