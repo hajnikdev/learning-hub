@@ -5,7 +5,12 @@ import { ArticleComponent } from './article.component';
 
 @NgModule({
   declarations: [],
-  imports: [CommonModule, RouterModule.forChild([{ path: '', component: ArticleComponent }])],
+  imports: [
+    CommonModule,
+    RouterModule.forChild([
+      { path: '', runGuardsAndResolvers: 'always', component: ArticleComponent },
+    ]),
+  ],
   exports: [],
 })
 export class ArticleModule {}

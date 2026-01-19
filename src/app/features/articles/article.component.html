@@ -1,6 +1,38 @@
 <div class="article-page">
   @if (article()) {
-    <h1>{{ article()?.title }}</h1>
+    <h1>
+      {{ article()?.title }}
+      <span style="float: right; display: flex; gap: 0.5rem; align-items: center">
+        @if (
+          !(
+            route.snapshot.queryParamMap.has('cheatsheet') &&
+            route.snapshot.queryParamMap.get('cheatsheet') === 'true'
+          )
+        ) {
+          <button
+            type="button"
+            (click)="goToCheatsheet()"
+            title="Show Cheatsheet"
+            style="background: none; border: none; cursor: pointer; padding: 0"
+          >
+            <span style="font-size: 1.5em">📄</span>
+          </button>
+        }
+        @if (
+          route.snapshot.queryParamMap.has('cheatsheet') &&
+          route.snapshot.queryParamMap.get('cheatsheet') === 'true'
+        ) {
+          <button
+            type="button"
+            (click)="goToFullArticle()"
+            title="Show Full Article"
+            style="background: none; border: none; cursor: pointer; padding: 0"
+          >
+            <span style="font-size: 1.5em">📖</span>
+          </button>
+        }
+      </span>
+    </h1>
     <div class="content" [innerHTML]="htmlContent()"></div>
   } @else {
     <p>Loading article...</p>
