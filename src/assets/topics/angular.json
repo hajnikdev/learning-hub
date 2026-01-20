@@ -8,6 +8,11 @@
       "articles": []
     },
     {
+      "id": "intermediate",
+      "title": "Intermediate Topics",
+      "articles": [{ "id": "angular-testing" }]
+    },
+    {
       "id": "advanced",
       "title": "Advanced Topics",
       "articles": [{ "id": "angular-routing" }]
