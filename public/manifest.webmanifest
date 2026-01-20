@@ -1,0 +1,8 @@
+{
+  "name": "learning-hub",
+  "short_name": "learning-hub",
+  "display": "standalone",
+  "scope": "./",
+  "start_url": "./",
+  "icons": []
+}
