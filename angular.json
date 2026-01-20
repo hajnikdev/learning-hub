@@ -86,7 +86,7 @@
           "options": {
             "browserTarget": "learning-hub:build:production",
             "serverTarget": "learning-hub:build:production",
-            "routes": ["/"]
+            "routes": ["/", "/articles", "/topics"]
           }
         }
       }
