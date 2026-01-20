@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 export interface Topic {
   id: string;
   title: string;
-  icon: string;
+  icon?: string;
 }
 
 @Injectable({ providedIn: 'root' })

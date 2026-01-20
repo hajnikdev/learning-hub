@@ -15,7 +15,7 @@
     {
       "id": "advanced",
       "title": "Advanced Topics",
-      "articles": [{ "id": "angular-routing" }]
+      "articles": [{ "id": "angular-routing" }, { "id": "angular-service-worker" }]
     }
   ]
 }
