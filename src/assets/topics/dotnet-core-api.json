@@ -1,0 +1,21 @@
+{
+  "id": "dotnet",
+  "title": ".NET API",
+  "sections": [
+    {
+      "id": "basics",
+      "title": "Basics",
+      "articles": [{ "id": "dotnet-api-introductory", "title": "Úvod do API" }]
+    },
+    {
+      "id": "intermediate",
+      "title": "Intermediate Topics",
+      "articles": []
+    },
+    {
+      "id": "advanced",
+      "title": "Advanced Topics",
+      "articles": []
+    }
+  ]
+}

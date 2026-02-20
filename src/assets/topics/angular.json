@@ -10,12 +10,15 @@
     {
       "id": "intermediate",
       "title": "Intermediate Topics",
-      "articles": [{ "id": "angular-testing" }]
+      "articles": [{ "id": "angular-testing", "title": "Testing Angular aplikácií" }]
     },
     {
       "id": "advanced",
       "title": "Advanced Topics",
-      "articles": [{ "id": "angular-routing" }, { "id": "angular-service-worker" }]
+      "articles": [
+        { "id": "angular-routing", "title": "Routing v Angular aplikáciách" },
+        { "id": "angular-service-worker", "title": "Service Worker v Angular aplikáciách" }
+      ]
     }
   ]
 }
