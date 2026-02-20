@@ -5,7 +5,7 @@
     {
       "id": "basics",
       "title": "Basics",
-      "articles": []
+      "articles": [{ "id": "angular-solid", "title": "Solid Principles in Angular" }]
     },
     {
       "id": "intermediate",
