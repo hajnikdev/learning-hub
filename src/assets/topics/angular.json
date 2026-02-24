@@ -17,6 +17,7 @@
       "title": "Advanced Topics",
       "articles": [
         { "id": "angular-routing", "title": "Routing v Angular aplikáciách" },
+        { "id": "angular-change-detection", "title": "Change Detection v Angular aplikáciách" },
         { "id": "angular-services", "title": "Services v Angular aplikáciách" },
         { "id": "angular-service-worker", "title": "Service Worker v Angular aplikáciách" }
       ]
