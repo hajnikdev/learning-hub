@@ -1,56 +1,56 @@
-## Basic Concepts
-- **SPA (Single Page Application):** One HTML file, dynamic content via JS, no reloads.
-- **Routing:** Updates UI and browser URL based on navigation.
-- **Router:** Provided via `provideRouter(routes)` in `providers`.
+## Základné koncepty
+- **SPA (Single Page Application):** Jeden HTML súbor, dynamický obsah cez JS, žiadne reloady.
+- **Routing:** Aktualizuje UI a URL v prehliadači na základe navigácie.
+- **Router:** Poskytovaný cez `provideRouter(routes)` v `providers`.
 
-## Setup
-- In `main.ts` (standalone):
+## Nastavenie
+- V `main.ts` (standalone):
   ```ts
   import { provideRouter } from '@angular/router';
   bootstrapApplication(AppComponent, {
     providers: [provideRouter(routes)]
   });
   ```
-- In module-based apps, add to module `providers`.
-- Routings are often outsourced to `app.routes.ts`.
+- V module-based aplikáciách pridať do module `providers`.
+- Routy sa často ukladajú do `app.routes.ts`.
 
-## Route Definition
+## Definícia Route
 - Route = `{ path: 'tasks', component: TasksComponent }`
-- Export routes array:
+- Export routes poľa:
   ```ts
   export const routes: Routes = [ ... ];
   ```
 
 ## Router Outlet
-- Place `<router-outlet></router-outlet>` in template where routed components should render.
-- Import `RouterOutlet` in component and add to `imports`.
+- Umiestnite `<router-outlet></router-outlet>` v template tam, kde sa majú vykresliť routované komponenty.
+- Importujte `RouterOutlet` v komponente a pridajte do `imports`.
 
-## Navigation
-- Use `[routerLink]` instead of `<a href>` for SPA navigation:
+## Navigácia
+- Použite `[routerLink]` namiesto `<a href>` pre SPA navigáciu:
   ```html
-  <a [routerLink]="'/tasks'">Tasks</a>
+  <a [routerLink]="'/tasks'">Úlohy</a>
   ```
-- Highlight active link:
+- Zvýraznenie aktívneho odkazu:
   ```html
-  <a [routerLink]="'/tasks'" routerLinkActive="selected">Tasks</a>
+  <a [routerLink]="'/tasks'" routerLinkActive="selected">Úlohy</a>
   ```
 
-## Dynamic Routes
-- Use `:param` for dynamic segments:
+## Dynamické Routes
+- Použite `:param` pre dynamické segmenty:
   ```ts
   { path: 'users/:userId/tasks', component: TasksComponent }
   ```
-- Bind param to component input:
+- Pripojenie parametru na component input:
   ```ts
   @Input({ required: true }) userId!: string;
   ```
-- Enable input binding:
+- Povolenie input bindingu:
   ```ts
   provideRouter(routes, withComponentInputBinding())
   ```
 
-## Child Routes
-- Define children in route:
+## Vnorené Routes (Child Routes)
+- Definícia children v route:
   ```ts
   {
     path: 'users/:userId',
@@ -61,94 +61,94 @@
     ]
   }
   ```
-- Parent component must have `<router-outlet>` for children.
+- Rodičovský komponent musí mať `<router-outlet>` pre children.
 
-## Programmatic Navigation
-- Inject `Router` and use:
+## Programová navigácia
+- Injektujte `Router` a použite:
   ```ts
   router.navigate(['/users', userId, 'tasks']);
   router.navigateByUrl('/users/U2/tasks');
   ```
-- Options:
-  - `relativeTo`, `queryParams`, `fragment`, `replaceUrl`, `state`, etc.
+- Možnosti:
+  - `relativeTo`, `queryParams`, `fragment`, `replaceUrl`, `state`, atď.
 
-## Not Found & Redirects
+## Not Found & Presmerovania
 - Catch-all route:
   ```ts
   { path: '**', component: NotFoundComponent }
   ```
-- Redirect:
+- Presmerovanie:
   ```ts
   { path: '', redirectTo: 'tasks', pathMatch: 'full' }
   ```
 
 ## ActivatedRoute & Snapshot
-- Access params:
+- Prístup k parametrom:
   ```ts
   constructor(private route: ActivatedRoute) {}
   ngOnInit() {
     const userId = this.route.snapshot.paramMap.get('userId');
   }
   ```
-- Use snapshot for static access, subscribe for dynamic changes.
+- Použite snapshot pre statický prístup, subscribe pre dynamické zmeny.
 
-## Query Params
-- Add query params:
+## Query parametre
+- Pridanie query parametrov:
   ```html
-  <a [routerLink]="['.']" [queryParams]="{ order: 'asc' }">Sort</a>
+  <a [routerLink]="['.']" [queryParams]="{ order: 'asc' }">Zoradiť</a>
   ```
-- Read in component:
+- Čítanie v komponente:
   ```ts
   @Input() order?: string;
-  // or
+  // alebo
   this.route.queryParams.subscribe(params => { ... });
   ```
 
-## Static Data
-- Add static data to route:
+## Statické dáta
+- Pridanie statických dát do route:
   ```ts
-  { path: 'tasks', component: TasksComponent, data: { message: 'Hello!' } }
+  { path: 'tasks', component: TasksComponent, data: { message: 'Ahoj!' } }
   ```
-- Available as input if using `withComponentInputBinding`.
+- Dostupné ako input pri použití `withComponentInputBinding`.
 
 ## Resolvers
-- Preload data before route activation:
+- Predčítanie dát pred aktiváciou route:
   ```ts
   { path: 'tasks', component: TasksComponent, resolve: { tasks: tasksResolver } }
   ```
-- Resolver is a function:
+- Resolver je funkcia:
   ```ts
   const tasksResolver: ResolveFn<Tasks[]> = (route, state) => ...;
   ```
-- Use `runGuardsAndResolvers: 'paramsOrQueryParamsChange'` for reactivity.
+- Použite `runGuardsAndResolvers: 'paramsOrQueryParamsChange'` pre reaktivitu.
 
-## Titles
-- Static title:
+## Titulky (Titles)
+- Statický title:
   ```ts
-  { path: 'tasks', component: TasksComponent, title: 'Tasks' }
+  { path: 'tasks', component: TasksComponent, title: 'Úlohy' }
   ```
-- Dynamic title:
+- Dynamický title:
   ```ts
   { path: 'tasks/:id', component: TasksComponent, title: titleResolver }
   ```
 
-## Guards
-- Types: `canMatch`, `canActivate`, `canActivateChild`, `canDeactivate`
-- Example `canMatch` guard:
+## Guards (Stráže)
+- Typy: `canMatch`, `canActivate`, `canActivateChild`, `canDeactivate`
+- Príklad `canMatch` guard:
   ```ts
   const myGuard: CanMatchFn = (route, segments) => true | false | RedirectCommand;
   ```
 
 ---
 
-## Quick Reference
+## Rýchla referencia
 - **Router Setup:** `provideRouter(routes)`
 - **Outlet:** `<router-outlet>`
-- **Navigation:** `[routerLink]`, `router.navigate()`
-- **Dynamic Params:** `:param`, `@Input()`
-- **Child Routes:** `children: []`, nested `<router-outlet>`
+- **Navigácia:** `[routerLink]`, `router.navigate()`
+- **Dynamické parametre:** `:param`, `@Input()`
+- **Vnorené Routes:** `children: []`, vnorený `<router-outlet>`
 - **Resolvers:** `resolve: { ... }`, `runGuardsAndResolvers`
-- **Guards:** `canMatch`, `canActivate`, etc.
-- **Titles:** `title: '...'` or resolver
+- **Guards:** `canMatch`, `canActivate`, atď.
+- **Titulky:** `title: '...'` alebo resolver
 - **Not Found:** `{ path: '**', ... }`
-- **Redirect:** `{ path: '', redirectTo: '...', pathMatch: 'full' }`
+- **Presmerovanie:** `{ path: '', redirectTo: '...', pathMatch: 'full' }`
