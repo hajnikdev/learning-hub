@@ -1,11 +1,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'YOUR_FIREBASE_API_KEY',
-    authDomain: 'YOUR_FIREBASE_AUTH_DOMAIN',
-    projectId: 'YOUR_FIREBASE_PROJECT_ID',
-    storageBucket: 'YOUR_FIREBASE_STORAGE_BUCKET',
-    messagingSenderId: 'YOUR_FIREBASE_MESSAGING_SENDER_ID',
-    appId: 'YOUR_FIREBASE_APP_ID',
+    apiKey: 'AIzaSyBjz6dWo0lOXdxY8gr5SqnbNkD3iokmDsE',
+    authDomain: 'learning-hub-27758.firebaseapp.com',
+    projectId: 'learning-hub-27758',
+    storageBucket: 'learning-hub-27758.firebasestorage.app',
+    messagingSenderId: '538400145451',
+    appId: '1:538400145451:web:0aeb86c25e361259fc2a6e',
   },
 };

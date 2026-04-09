@@ -1,13 +1,17 @@
-@if (authService.isLoggedIn) {
-  <nav class="app-nav">
-    <a class="app-nav__brand" routerLink="/">Learning Hub</a>
-    <div class="app-nav__actions">
-      <span class="app-nav__user">{{ authService.currentUser()?.email }}</span>
-      <button class="app-nav__logout" (click)="authService.logout()">Sign Out</button>
-    </div>
-  </nav>
-}
+@if (authService.currentUser() === undefined) {
+  <app-loader [fullPage]="true" />
+} @else {
+  @if (authService.isLoggedIn) {
+    <nav class="app-nav">
+      <a class="app-nav__brand" routerLink="/">Learning Hub</a>
+      <div class="app-nav__actions">
+        <span class="app-nav__user">{{ authService.currentUser()?.email }}</span>
+        <button class="app-nav__logout" (click)="authService.logout()">Sign Out</button>
+      </div>
+    </nav>
+  }
 
-<main class="app-content">
-  <router-outlet />
-</main>
+  <main class="app-content" [class.app-content--with-nav]="authService.isLoggedIn">
+    <router-outlet />
+  </main>
+}

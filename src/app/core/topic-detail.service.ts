@@ -1,24 +1,53 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import {
+  ArticleRecord,
+  LearningContentService,
+  TopicDetail,
+  TopicSection,
+} from './learning-content.service';
 
-export interface TopicSection {
-  id: string;
-  title: string;
-  articles: { id: string; title: string; content: string }[];
-}
-
-export interface TopicDetail {
-  id: string;
-  title: string;
-  sections: TopicSection[];
-}
+export type { TopicDetail, TopicSection } from './learning-content.service';
 
 @Injectable({ providedIn: 'root' })
 export class TopicDetailService {
-  constructor(private http: HttpClient) {}
+  constructor(private learningContentService: LearningContentService) {}
 
-  getTopicDetail(id: string): Observable<TopicDetail> {
-    return this.http.get<TopicDetail>(`assets/topics/${id}.json`);
+  getTopicDetail(id: string): Observable<TopicDetail | null> {
+    return this.learningContentService.getTopicDetail(id);
+  }
+
+  getArticleById(articleId: string): Observable<ArticleRecord | null> {
+    return this.learningContentService.getArticleById(articleId);
+  }
+
+  createArticle(
+    topicId: string,
+    sectionId: string,
+    title: string,
+    content: string,
+    cheatsheet: string = '',
+  ): Promise<void> {
+    return this.learningContentService.createArticle(topicId, sectionId, title, content, cheatsheet);
+  }
+
+  createSection(topicId: string, title: string): Promise<void> {
+    return this.learningContentService.createSection(topicId, title);
+  }
+
+  updateSection(topicId: string, sectionId: string, title: string): Promise<void> {
+    return this.learningContentService.updateSection(topicId, sectionId, title);
+  }
+
+  deleteSection(topicId: string, sectionId: string): Promise<void> {
+    return this.learningContentService.deleteSection(topicId, sectionId);
+  }
+
+  updateArticle(articleId: string, title: string, content: string, cheatsheet?: string): Promise<void> {
+    return this.learningContentService.updateArticle(articleId, title, content, cheatsheet);
+  }
+
+  deleteArticle(topicId: string, sectionId: string, articleId: string): Promise<void> {
+    return this.learningContentService.deleteArticle(topicId, sectionId, articleId);
   }
 }

@@ -1,4 +1,14 @@
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
 .app-nav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -44,5 +54,12 @@
 }
 
 .app-content {
-  min-height: calc(100vh - 56px);
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  &--with-nav {
+    flex: 1;
+  }
 }

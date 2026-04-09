@@ -1,0 +1,35 @@
+.app-loader {
+  min-height: 12rem;
+  display: grid;
+  place-items: center;
+
+  &--full-page {
+    min-height: 100vh;
+  }
+
+  &--compact {
+    min-height: auto;
+    display: inline-grid;
+  }
+
+  &__spinner {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    border: 0.25rem solid rgba(25, 118, 210, 0.2);
+    border-top-color: #1976d2;
+    animation: app-loader-spin 0.8s linear infinite;
+  }
+
+  &--compact &__spinner {
+    width: 1rem;
+    height: 1rem;
+    border-width: 0.125rem;
+  }
+}
+
+@keyframes app-loader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

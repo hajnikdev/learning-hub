@@ -1,19 +1,184 @@
 <div class="topic-page">
-  <h1>{{ topic()?.title }}</h1>
-  @if (topic()) {
+  @if (isLoading()) {
+    <app-loader />
+  } @else if (topic()) {
+    <div class="topic-header">
+      <h1>{{ topic()?.title }}</h1>
+      <button type="button" (click)="openCreateSectionDialog()">+ Add Group</button>
+    </div>
+
     @for (section of topic()?.sections; track section.id) {
       <div class="section">
-        <h2>{{ section.title }}</h2>
+        <div class="section-header">
+          <h2 [title]="section.title">{{ section.title }}</h2>
+          <div class="section-actions section-actions--desktop">
+            <button type="button" (click)="openCreateDialog(section.id)">+ Add Article</button>
+            <button type="button" (click)="openUpdateSectionDialog(section)">Update Group</button>
+            <button type="button" (click)="openDeleteSectionDialog(section)">Delete Group</button>
+          </div>
+
+          <details
+            class="actions-menu section-actions--mobile"
+            (click)="$event.stopPropagation()"
+            (toggle)="onActionMenuToggle($event)"
+          >
+            <summary class="actions-menu__trigger">...</summary>
+            <div class="actions-menu__list">
+              <button type="button" (click)="openCreateDialog(section.id)">+ Add Article</button>
+              <button type="button" (click)="openUpdateSectionDialog(section)">Update Group</button>
+              <button type="button" (click)="openDeleteSectionDialog(section)">Delete Group</button>
+            </div>
+          </details>
+        </div>
+
         <div class="articles">
           @for (article of section.articles; track article.id) {
-            <div class="article" (click)="goToArticle(article.id)" style="cursor: pointer">
-              <h3>{{ article.title }}</h3>
+            <div class="article" (click)="goToArticle(article.id)">
+              <h3 [title]="article.title">{{ article.title }}</h3>
+              <div class="article-actions">
+                <div class="article-actions--desktop">
+                  <button
+                    type="button"
+                    title="Update article"
+                    (click)="$event.stopPropagation(); openUpdateDialog(section.id, article)"
+                  >
+                    Update
+                  </button>
+                  <button
+                    type="button"
+                    title="Delete article"
+                    class="article-delete"
+                    (click)="$event.stopPropagation(); openDeleteDialog(section.id, article)"
+                  >
+                    Delete
+                  </button>
+                </div>
+
+                <details
+                  class="actions-menu article-actions--mobile"
+                  (click)="$event.stopPropagation()"
+                  (toggle)="onActionMenuToggle($event)"
+                >
+                  <summary class="actions-menu__trigger">...</summary>
+                  <div class="actions-menu__list">
+                    <button
+                      type="button"
+                      title="Update article"
+                      (click)="$event.stopPropagation(); openUpdateDialog(section.id, article)"
+                    >
+                      Update
+                    </button>
+                    <button
+                      type="button"
+                      title="Delete article"
+                      (click)="$event.stopPropagation(); openDeleteDialog(section.id, article)"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </details>
+              </div>
             </div>
           }
         </div>
       </div>
     }
   } @else {
-    <p>Loading topic...</p>
+    <p>Topic not found.</p>
   }
+
+  <dialog #articleDialog (click)="$event.target === $event.currentTarget && closeDialog()">
+    @if (dialogMode() === 'create') {
+      <h2>Create Article</h2>
+    }
+    @if (dialogMode() === 'update') {
+      <h2>Update Article</h2>
+    }
+    @if (dialogMode() === 'delete') {
+      <h2>Delete Article</h2>
+    }
+
+    @if (dialogMode() !== 'delete') {
+      <label>
+        Title
+        <input
+          type="text"
+          [value]="articleTitle()"
+          (input)="articleTitle.set($any($event.target).value)"
+        />
+      </label>
+    }
+
+    @if (dialogMode() === 'delete') {
+      <p>Are you sure you want to delete "{{ selectedArticle()?.title }}"?</p>
+    }
+
+    @if (dialogError()) {
+      <p class="dialog-error">{{ dialogError() }}</p>
+    }
+
+    <div class="dialog-actions">
+      <button type="button" (click)="closeDialog()" [disabled]="isSaving()">Cancel</button>
+      <button type="button" (click)="confirmDialogAction()" [disabled]="isSaving()">Confirm</button>
+    </div>
+
+    @if (isSaving()) {
+      <div class="dialog-loader-overlay" aria-hidden="true">
+        <app-loader />
+      </div>
+    }
+  </dialog>
+
+  <dialog #sectionDialog (click)="$event.target === $event.currentTarget && closeSectionDialog()">
+    @if (sectionDialogMode() === 'create') {
+      <h2>Create Group</h2>
+    }
+    @if (sectionDialogMode() === 'update') {
+      <h2>Update Group</h2>
+    }
+    @if (sectionDialogMode() === 'delete') {
+      <h2>Delete Group</h2>
+    }
+
+    @if (sectionDialogMode() !== 'delete') {
+      <label>
+        Group title
+        <input
+          type="text"
+          [value]="sectionTitle()"
+          (input)="sectionTitle.set($any($event.target).value)"
+        />
+      </label>
+    }
+
+    @if (sectionDialogMode() === 'delete') {
+      <p>
+        Are you sure you want to delete group "{{ selectedSection()?.title }}"?
+        This will also delete all articles in this group.
+      </p>
+    }
+
+    @if (sectionDialogError()) {
+      <p class="dialog-error">{{ sectionDialogError() }}</p>
+    }
+
+    <div class="dialog-actions">
+      <button type="button" (click)="closeSectionDialog()" [disabled]="isSectionSaving()">
+        Cancel
+      </button>
+      <button
+        type="button"
+        (click)="confirmSectionDialogAction()"
+        [disabled]="isSectionSaving()"
+      >
+        Confirm
+      </button>
+    </div>
+
+    @if (isSectionSaving()) {
+      <div class="dialog-loader-overlay" aria-hidden="true">
+        <app-loader />
+      </div>
+    }
+  </dialog>
 </div>

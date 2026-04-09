@@ -1,40 +1,76 @@
 <div class="article-page">
-  @if (article()) {
-    <h1>
-      {{ article()?.title }}
-      <span style="float: right; display: flex; gap: 0.5rem; align-items: center">
-        @if (
-          !(
-            route.snapshot.queryParamMap.has('cheatsheet') &&
-            route.snapshot.queryParamMap.get('cheatsheet') === 'true'
-          )
-        ) {
-          <button
-            type="button"
-            (click)="goToCheatsheet()"
-            title="Show Cheatsheet"
-            style="background: none; border: none; cursor: pointer; padding: 0"
-          >
-            <span style="font-size: 1.5em">📄</span>
-          </button>
-        }
-        @if (
-          route.snapshot.queryParamMap.has('cheatsheet') &&
-          route.snapshot.queryParamMap.get('cheatsheet') === 'true'
-        ) {
-          <button
-            type="button"
-            (click)="goToFullArticle()"
-            title="Show Full Article"
-            style="background: none; border: none; cursor: pointer; padding: 0"
-          >
-            <span style="font-size: 1.5em">📖</span>
-          </button>
-        }
-      </span>
-    </h1>
-    <div class="content" [innerHTML]="htmlContent()"></div>
+  @if (isLoading()) {
+    <app-loader />
+  } @else if (article()) {
+    @if (!isEditing()) {
+      <h1 class="article-preview-header">
+        <span class="article-preview-title" [title]="article()?.title || ''">{{ article()?.title }}</span>
+        <span class="article-preview-actions article-preview-actions--desktop">
+          <button type="button" (click)="toggleEdit()" title="Edit Article">Edit</button>
+          @if (!isCheatsheetView()) {
+            <button type="button" (click)="goToCheatsheet()" title="Show Cheatsheet">Cheatsheet</button>
+          }
+          @if (isCheatsheetView()) {
+            <button type="button" (click)="goToFullArticle()" title="Show Full Article">
+              Full Article
+            </button>
+          }
+        </span>
+
+        <details
+          class="actions-menu article-preview-actions--mobile"
+          (click)="$event.stopPropagation()"
+          (toggle)="onActionMenuToggle($event)"
+        >
+          <summary class="actions-menu__trigger">...</summary>
+          <div class="actions-menu__list">
+            <button type="button" (click)="toggleEdit()" title="Edit Article">Edit</button>
+            @if (!isCheatsheetView()) {
+              <button type="button" (click)="goToCheatsheet()" title="Show Cheatsheet">Cheatsheet</button>
+            }
+            @if (isCheatsheetView()) {
+              <button type="button" (click)="goToFullArticle()" title="Show Full Article">
+                Full Article
+              </button>
+            }
+          </div>
+        </details>
+      </h1>
+      <div class="content" [innerHTML]="htmlContent()"></div>
+    } @else {
+      <div class="editor-header">
+        <input
+          class="title-editor"
+          type="text"
+          [value]="editedTitle()"
+          (input)="editedTitle.set($any($event.target).value)"
+          aria-label="Article title"
+        />
+
+        <div class="editor-actions">
+          <button type="button" (click)="toggleEdit()" [disabled]="isSaving()">Cancel</button>
+          <button type="button" (click)="saveArticle()" [disabled]="isSaving()">Save</button>
+        </div>
+      </div>
+
+      @if (editError()) {
+        <p class="editor-error">{{ editError() }}</p>
+      }
+
+      <textarea
+        class="content-editor"
+        [value]="editedContent()"
+        (input)="editedContent.set($any($event.target).value)"
+      ></textarea>
+
+      <h2>Cheatsheet</h2>
+      <textarea
+        class="content-editor"
+        [value]="editedCheatsheet()"
+        (input)="editedCheatsheet.set($any($event.target).value)"
+      ></textarea>
+    }
   } @else {
-    <p>Loading article...</p>
+    <p>Article not found.</p>
   }
 </div>

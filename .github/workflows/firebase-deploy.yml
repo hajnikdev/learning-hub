@@ -64,6 +64,16 @@ jobs:
       - name: Build Angular
         run: npm run build
 
+      - name: Deploy Firestore rules
+        run: |
+          SERVICE_ACCOUNT_FILE="$RUNNER_TEMP/firebase-service-account.json"
+          printf '%s' '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}' > "$SERVICE_ACCOUNT_FILE"
+          export GOOGLE_APPLICATION_CREDENTIALS="$SERVICE_ACCOUNT_FILE"
+          npx firebase-tools deploy \
+            --only firestore:rules \
+            --project "${{ steps.firebase_config.outputs.projectId }}" \
+            --non-interactive
+
       - name: Deploy to Firebase Hosting
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:

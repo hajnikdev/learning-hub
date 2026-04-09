@@ -1,13 +1,180 @@
 <div class="dashboard">
-  <h1>Dashboard</h1>
-  <div class="topics-list">
-    @for (topic of topics(); track topic.id) {
-      <a class="topic-card" [routerLink]="['/topic', topic.id]">
-        @if (topic.icon) {
-          <img [src]="'assets/icons/' + topic.icon" [alt]="topic.title" width="48" height="48" />
-        }
-        <div class="topic-title">{{ topic.title }}</div>
-      </a>
-    }
+  <div class="dashboard-header">
+    <h1>Topics</h1>
+    <button type="button" class="topic-add" (click)="openCreateGroupDialog()">
+      + Add Group
+    </button>
   </div>
+
+  @if (isLoading()) {
+    <app-loader />
+  } @else {
+    <div class="topics-list">
+      @for (group of groupedTopics(); track group.name) {
+        <section class="topic-group">
+          <div class="topic-group-header">
+            <h2>{{ group.name }}</h2>
+            <div class="topic-group-actions topic-group-actions--desktop">
+              <button type="button" (click)="openCreateDialog(group.name)">+ Add Topic</button>
+              <button type="button" (click)="openUpdateGroupDialog(group.name)">Update Group</button>
+              <button type="button" (click)="openDeleteGroupDialog(group.name)">Delete Group</button>
+            </div>
+
+            <details
+              class="actions-menu topic-group-actions--mobile"
+              (click)="$event.stopPropagation()"
+              (toggle)="onActionMenuToggle($event)"
+            >
+              <summary class="actions-menu__trigger">...</summary>
+              <div class="actions-menu__list">
+                <button type="button" (click)="openCreateDialog(group.name)">+ Add Topic</button>
+                <button type="button" (click)="openUpdateGroupDialog(group.name)">Update Group</button>
+                <button type="button" (click)="openDeleteGroupDialog(group.name)">Delete Group</button>
+              </div>
+            </details>
+          </div>
+
+          @for (topic of group.topics; track topic.id) {
+            <div
+              class="topic-card"
+              role="link"
+              tabindex="0"
+              (click)="goToTopic(topic.id)"
+              (keydown.enter)="goToTopic(topic.id)"
+              (keydown.space)="$event.preventDefault(); goToTopic(topic.id)"
+            >
+              <a class="topic-link" [routerLink]="['/topic', topic.id]">
+                @if (topic.icon) {
+                  <img [src]="'assets/icons/' + topic.icon" [alt]="topic.title" width="48" height="48" />
+                }
+                <div class="topic-title" [title]="topic.title">{{ topic.title }}</div>
+              </a>
+
+              <div class="topic-actions" (click)="$event.stopPropagation()">
+                <div class="topic-actions--desktop">
+                  <button type="button" (click)="openUpdateDialog(topic)">Update</button>
+                  <button type="button" (click)="openDeleteDialog(topic)">Delete</button>
+                </div>
+
+                <details
+                  class="actions-menu topic-actions--mobile"
+                  (click)="$event.stopPropagation()"
+                  (toggle)="onActionMenuToggle($event)"
+                >
+                  <summary class="actions-menu__trigger">...</summary>
+                  <div class="actions-menu__list">
+                    <button type="button" (click)="openUpdateDialog(topic)">Update</button>
+                    <button type="button" (click)="openDeleteDialog(topic)">Delete</button>
+                  </div>
+                </details>
+              </div>
+            </div>
+          }
+        </section>
+      }
+
+      @if (groupedTopics().length === 0) {
+        <p>No topics yet.</p>
+      }
+    </div>
+  }
+
+  <dialog #topicDialog (click)="$event.target === $event.currentTarget && closeDialog()">
+    @if (dialogMode() === 'create') {
+      <h2>Create Topic</h2>
+    }
+    @if (dialogMode() === 'update') {
+      <h2>Update Topic</h2>
+    }
+    @if (dialogMode() === 'delete') {
+      <h2>Delete Topic</h2>
+    }
+
+    @if (dialogMode() !== 'delete') {
+      @if (dialogMode() === 'update') {
+        <label>
+          Topic group
+          <input
+            type="text"
+            [value]="topicGroup()"
+            (input)="topicGroup.set($any($event.target).value)"
+          />
+        </label>
+      } @else {
+        <p>Group: {{ createTopicGroupContext() }}</p>
+      }
+
+      <label>
+        Topic title
+        <input
+          type="text"
+          [value]="topicTitle()"
+          (input)="topicTitle.set($any($event.target).value)"
+        />
+      </label>
+    }
+
+    @if (dialogMode() === 'delete') {
+      <p>Are you sure you want to delete "{{ selectedTopic()?.title }}"?</p>
+    }
+
+    @if (dialogError()) {
+      <p class="dialog-error">{{ dialogError() }}</p>
+    }
+
+    <div class="dialog-actions">
+      <button type="button" (click)="closeDialog()" [disabled]="isSaving()">Cancel</button>
+      <button type="button" (click)="confirmDialogAction()" [disabled]="isSaving()">Confirm</button>
+    </div>
+
+    @if (isSaving()) {
+      <div class="dialog-loader-overlay" aria-hidden="true">
+        <app-loader />
+      </div>
+    }
+  </dialog>
+
+  <dialog #groupDialog (click)="$event.target === $event.currentTarget && closeGroupDialog()">
+    @if (groupDialogMode() === 'create') {
+      <h2>Create Group</h2>
+    }
+    @if (groupDialogMode() === 'update') {
+      <h2>Update Group</h2>
+    }
+    @if (groupDialogMode() === 'delete') {
+      <h2>Delete Group</h2>
+    }
+
+    @if (groupDialogMode() !== 'delete') {
+      <label>
+        Group name
+        <input
+          type="text"
+          [value]="groupName()"
+          (input)="groupName.set($any($event.target).value)"
+        />
+      </label>
+    }
+
+    @if (groupDialogMode() === 'delete') {
+      <p>Are you sure you want to delete group "{{ selectedGroup() }}" and all its topics?</p>
+    }
+
+    @if (groupDialogError()) {
+      <p class="dialog-error">{{ groupDialogError() }}</p>
+    }
+
+    <div class="dialog-actions">
+      <button type="button" (click)="closeGroupDialog()" [disabled]="isGroupSaving()">Cancel</button>
+      <button type="button" (click)="confirmGroupDialogAction()" [disabled]="isGroupSaving()">
+        Confirm
+      </button>
+    </div>
+
+    @if (isGroupSaving()) {
+      <div class="dialog-loader-overlay" aria-hidden="true">
+        <app-loader />
+      </div>
+    }
+  </dialog>
 </div>

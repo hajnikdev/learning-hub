@@ -1,22 +1,40 @@
-import { inject } from '@angular/core';
+import { inject, PLATFORM_ID } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from './auth.service';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
 
-  // undefined = still loading; null = not logged in
-  const user = authService.currentUser();
-
-  if (user === undefined) {
-    // Auth state not yet resolved – allow through; guard will re-run on navigation
+  if (!isPlatformBrowser(platformId)) {
     return true;
   }
+
+  const user = await authService.getResolvedUser();
 
   if (user !== null) {
     return true;
   }
 
   return router.createUrlTree(['/login']);
+};
+
+export const guestOnlyGuard: CanActivateFn = async () => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const platformId = inject(PLATFORM_ID);
+
+  if (!isPlatformBrowser(platformId)) {
+    return true;
+  }
+
+  const user = await authService.getResolvedUser();
+
+  if (user !== null) {
+    return router.createUrlTree(['/']);
+  }
+
+  return true;
 };
