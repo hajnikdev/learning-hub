@@ -6,7 +6,7 @@
         <h2>{{ section.title }}</h2>
         <div class="articles">
           @for (article of section.articles; track article.id) {
-            <div class="article" (click)="goToArticle(article.id)" style="cursor:pointer;">
+            <div class="article" (click)="goToArticle(article.id)" style="cursor: pointer">
               <h3>{{ article.title }}</h3>
             </div>
           }

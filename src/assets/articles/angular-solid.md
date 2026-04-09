@@ -32,26 +32,26 @@ Komponent alebo trieda by mali mat len jeden dovod na zmenu. Ak pri popise zodpo
 
 ```ts
 @Component({
-	selector: 'app-root',
-	template: `
-		<app-toolbar></app-toolbar>
-		<main>
-			<section class="widget">
-				<h2>Weather</h2>
-				<button (click)="exportJson()">Export</button>
-			</section>
-		</main>
-	`,
+  selector: 'app-root',
+  template: `
+    <app-toolbar></app-toolbar>
+    <main>
+      <section class="widget">
+        <h2>Weather</h2>
+        <button (click)="exportJson()">Export</button>
+      </section>
+    </main>
+  `,
 })
 export class AppComponent {
-	exportJson() {
-		const data = { temp: 21, unit: 'C' };
-		const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-		const link = document.createElement('a');
-		link.href = URL.createObjectURL(blob);
-		link.download = 'weather.json';
-		link.click();
-	}
+  exportJson() {
+    const data = { temp: 21, unit: 'C' };
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'weather.json';
+    link.click();
+  }
 }
 ```
 
@@ -60,30 +60,30 @@ export class AppComponent {
 ```ts
 @Injectable({ providedIn: 'root' })
 export class JsonExporterService {
-	export(data: unknown, filename: string) {
-		const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-		const link = document.createElement('a');
-		link.href = URL.createObjectURL(blob);
-		link.download = filename;
-		link.click();
-	}
+  export(data: unknown, filename: string) {
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
 }
 
 @Component({
-	selector: 'app-widget',
-	template: `
-		<section class="widget">
-			<h2>Weather</h2>
-			<button (click)="onExport()">Export</button>
-		</section>
-	`,
+  selector: 'app-widget',
+  template: `
+    <section class="widget">
+      <h2>Weather</h2>
+      <button (click)="onExport()">Export</button>
+    </section>
+  `,
 })
 export class WidgetComponent {
-	constructor(private readonly exporter: JsonExporterService) {}
+  constructor(private readonly exporter: JsonExporterService) {}
 
-	onExport() {
-		this.exporter.export({ temp: 21, unit: 'C' }, 'weather.json');
-	}
+  onExport() {
+    this.exporter.export({ temp: 21, unit: 'C' }, 'weather.json');
+  }
 }
 ```
 
@@ -97,20 +97,20 @@ Komponent by mal byt rozsiritelny bez toho, aby sa musel menit. V Angulari to ca
 
 ```ts
 @Component({
-	selector: 'app-widget',
-	template: `
-		<section class="widget">
-			<ng-container *ngIf="type === 'weather'; else velocity">
-				<h3>Weather</h3>
-			</ng-container>
-			<ng-template #velocity>
-				<h3>Velocity</h3>
-			</ng-template>
-		</section>
-	`,
+  selector: 'app-widget',
+  template: `
+    <section class="widget">
+      <ng-container *ngIf="type === 'weather'; else velocity">
+        <h3>Weather</h3>
+      </ng-container>
+      <ng-template #velocity>
+        <h3>Velocity</h3>
+      </ng-template>
+    </section>
+  `,
 })
 export class WidgetComponent {
-	@Input() type: 'weather' | 'velocity' = 'weather';
+  @Input() type: 'weather' | 'velocity' = 'weather';
 }
 ```
 
@@ -118,27 +118,27 @@ export class WidgetComponent {
 
 ```ts
 @Component({
-	selector: 'app-widget',
-	template: `
-		<section class="widget">
-			<ng-content></ng-content>
-		</section>
-	`,
+  selector: 'app-widget',
+  template: `
+    <section class="widget">
+      <ng-content></ng-content>
+    </section>
+  `,
 })
 export class WidgetComponent {}
 ```
 
 ```html
 <app-widget>
-	<app-weather-content></app-weather-content>
+  <app-weather-content></app-weather-content>
 </app-widget>
 
 <app-widget>
-	<app-velocity-content></app-velocity-content>
+  <app-velocity-content></app-velocity-content>
 </app-widget>
 
 <app-widget>
-	<p>Custom content without changing the widget.</p>
+  <p>Custom content without changing the widget.</p>
 </app-widget>
 ```
 
@@ -153,21 +153,21 @@ Potomok musi zachovat kontrakt predka. Ak metoda v potomkovi meni spravanie tak,
 ```ts
 @Directive()
 export abstract class WidgetBase {
-	@Input() title = '';
+  @Input() title = '';
 
-	exportJson(): void {
-		console.log('exporting...');
-	}
+  exportJson(): void {
+    console.log('exporting...');
+  }
 }
 
 @Component({
-	selector: 'app-widget',
-	template: `<h3>{{ title }}</h3>`,
+  selector: 'app-widget',
+  template: `<h3>{{ title }}</h3>`,
 })
 export class WidgetComponent extends WidgetBase {
-	override exportJson(): void {
-		throw new Error('Export is not supported');
-	}
+  override exportJson(): void {
+    throw new Error('Export is not supported');
+  }
 }
 ```
 
@@ -175,14 +175,14 @@ export class WidgetComponent extends WidgetBase {
 
 ```ts
 @Component({
-	selector: 'app-widget',
-	template: `<h3>{{ title }}</h3>`,
+  selector: 'app-widget',
+  template: `<h3>{{ title }}</h3>`,
 })
 export class WidgetComponent extends WidgetBase {
-	override exportJson(): void {
-		super.exportJson();
-		console.log('widget export done');
-	}
+  override exportJson(): void {
+    super.exportJson();
+    console.log('widget export done');
+  }
 }
 ```
 
@@ -196,21 +196,21 @@ Ak rozhranie obsahuje vlastnosti, ktore nie kazda implementacia potrebuje, treba
 
 ```ts
 export interface WidgetContent {
-	id: string;
-	loading: boolean;
-	reload(): void;
+  id: string;
+  loading: boolean;
+  reload(): void;
 }
 
 @Component({
-	selector: 'app-velocity-content',
-	template: `<p>Velocity</p>`,
+  selector: 'app-velocity-content',
+  template: `<p>Velocity</p>`,
 })
 export class VelocityContentComponent implements WidgetContent {
-	id = 'velocity';
-	loading = false;
-	reload(): void {
-		// not needed, but must be implemented
-	}
+  id = 'velocity';
+  loading = false;
+  reload(): void {
+    // not needed, but must be implemented
+  }
 }
 ```
 
@@ -218,32 +218,32 @@ export class VelocityContentComponent implements WidgetContent {
 
 ```ts
 export interface WidgetContent {
-	id: string;
+  id: string;
 }
 
 export interface Reloadable {
-	loading: boolean;
-	reload(): void;
+  loading: boolean;
+  reload(): void;
 }
 
 @Component({
-	selector: 'app-weather-content',
-	template: `<p>Weather</p>`,
+  selector: 'app-weather-content',
+  template: `<p>Weather</p>`,
 })
 export class WeatherContentComponent implements WidgetContent, Reloadable {
-	id = 'weather';
-	loading = false;
-	reload(): void {
-		console.log('polling...');
-	}
+  id = 'weather';
+  loading = false;
+  reload(): void {
+    console.log('polling...');
+  }
 }
 
 @Component({
-	selector: 'app-velocity-content',
-	template: `<p>Velocity</p>`,
+  selector: 'app-velocity-content',
+  template: `<p>Velocity</p>`,
 })
 export class VelocityContentComponent implements WidgetContent {
-	id = 'velocity';
+  id = 'velocity';
 }
 ```
 
@@ -257,15 +257,15 @@ Vysoko-urovnove komponenty by nemali zavisiet od konkretnych implementacii. V An
 
 ```ts
 @Component({
-	selector: 'app-widget',
-	template: `<ng-content></ng-content>`,
+  selector: 'app-widget',
+  template: `<ng-content></ng-content>`,
 })
 export class WidgetComponent implements AfterContentInit {
-	@ContentChild(WeatherContentComponent) content?: WeatherContentComponent;
+  @ContentChild(WeatherContentComponent) content?: WeatherContentComponent;
 
-	ngAfterContentInit() {
-		this.content?.reload();
-	}
+  ngAfterContentInit() {
+    this.content?.reload();
+  }
 }
 ```
 
@@ -275,29 +275,26 @@ export class WidgetComponent implements AfterContentInit {
 export const RELOADABLE_CONTENT = new InjectionToken<Reloadable>('reloadable-content');
 
 @Component({
-	selector: 'app-weather-content',
-	template: `<p>Weather</p>`,
-	providers: [
-		{ provide: RELOADABLE_CONTENT, useExisting: WeatherContentComponent },
-	],
+  selector: 'app-weather-content',
+  template: `<p>Weather</p>`,
+  providers: [{ provide: RELOADABLE_CONTENT, useExisting: WeatherContentComponent }],
 })
 export class WeatherContentComponent implements Reloadable {
-	loading = false;
-	reload(): void {
-		console.log('polling...');
-	}
+  loading = false;
+  reload(): void {
+    console.log('polling...');
+  }
 }
 
 @Component({
-	selector: 'app-widget',
-	template: `<ng-content></ng-content>`,
+  selector: 'app-widget',
+  template: `<ng-content></ng-content>`,
 })
 export class WidgetComponent implements AfterContentInit {
-	@ContentChild(RELOADABLE_CONTENT) content?: Reloadable;
+  @ContentChild(RELOADABLE_CONTENT) content?: Reloadable;
 
-	ngAfterContentInit() {
-		this.content?.reload();
-	}
+  ngAfterContentInit() {
+    this.content?.reload();
+  }
 }
 ```
-

@@ -13,12 +13,12 @@ export class TopicsComponent {
   constructor(
     private route: ActivatedRoute,
     private topicDetailService: TopicDetailService,
-    private router: Router
+    private router: Router,
   ) {
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe((params: import('@angular/router').ParamMap) => {
       const id = params.get('id');
       if (id) {
-        this.topicDetailService.getTopicDetail(id).subscribe((topic) => {
+        this.topicDetailService.getTopicDetail(id).subscribe((topic: TopicDetail) => {
           this.topic.set(topic);
         });
       }

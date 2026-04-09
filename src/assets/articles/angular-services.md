@@ -470,9 +470,7 @@ import { Optional } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class TasksService {
-  constructor(
-    @Optional() private logger?: LoggingService
-  ) {
+  constructor(@Optional() private logger?: LoggingService) {
     if (this.logger) {
       this.logger.log('TasksService initialized');
     }
@@ -485,7 +483,7 @@ export class TasksService {
 ```typescript
 export class TasksService {
   private logger = inject(LoggingService, { optional: true });
-  
+
   addTask(task: Task) {
     this.logger?.log('Task added');
   }
@@ -501,12 +499,10 @@ import { Self } from '@angular/core';
 
 @Component({
   selector: 'app-task',
-  providers: [TasksService] // musí byť tu
+  providers: [TasksService], // musí byť tu
 })
 export class TaskComponent {
-  constructor(
-    @Self() private tasksService: TasksService
-  ) {}
+  constructor(@Self() private tasksService: TasksService) {}
 }
 ```
 
@@ -525,11 +521,11 @@ import { SkipSelf } from '@angular/core';
 
 @Component({
   selector: 'app-child-task',
-  providers: [TasksService] // táto inštancia sa PRESKOČÍ
+  providers: [TasksService], // táto inštancia sa PRESKOČÍ
 })
 export class ChildTaskComponent {
   constructor(
-    @SkipSelf() private tasksService: TasksService // použije rodičovskú inštanciu
+    @SkipSelf() private tasksService: TasksService, // použije rodičovskú inštanciu
   ) {}
 }
 ```
@@ -548,11 +544,11 @@ Hľadá závislosť **len** v aktuálnom komponente a jeho host elemente. Zastav
 import { Host } from '@angular/core';
 
 @Component({
-  selector: 'app-task-item'
+  selector: 'app-task-item',
 })
 export class TaskItemComponent {
   constructor(
-    @Host() private taskList: TaskListComponent // musí byť host komponent
+    @Host() private taskList: TaskListComponent, // musí byť host komponent
   ) {}
 }
 ```
@@ -571,9 +567,9 @@ constructor(
 ) {}
 
 // alebo
-private parentLogger = inject(LoggingService, { 
-  optional: true, 
-  skipSelf: true 
+private parentLogger = inject(LoggingService, {
+  optional: true,
+  skipSelf: true
 });
 ```
 
@@ -603,7 +599,7 @@ export const PluginA: Plugin = {
   name: 'Plugin A',
   execute() {
     console.log('Plugin A executed');
-  }
+  },
 };
 
 // plugin-b.ts
@@ -611,7 +607,7 @@ export const PluginB: Plugin = {
   name: 'Plugin B',
   execute() {
     console.log('Plugin B executed');
-  }
+  },
 };
 ```
 
@@ -624,7 +620,7 @@ export const appConfig: ApplicationConfig = {
     { provide: PLUGIN_TOKEN, useValue: PluginA, multi: true },
     { provide: PLUGIN_TOKEN, useValue: PluginB, multi: true },
     // môžete pridávať ďalšie
-  ]
+  ],
 };
 ```
 
@@ -634,9 +630,9 @@ export const appConfig: ApplicationConfig = {
 @Injectable({ providedIn: 'root' })
 export class PluginService {
   private plugins = inject(PLUGIN_TOKEN); // Plugin[]
-  
+
   executeAll() {
-    this.plugins.forEach(plugin => {
+    this.plugins.forEach((plugin) => {
       console.log(`Executing ${plugin.name}`);
       plugin.execute();
     });
@@ -650,11 +646,7 @@ Angular používa multi-providers pre HTTP interceptory:
 
 ```typescript
 export const appConfig: ApplicationConfig = {
-  providers: [
-    provideHttpClient(
-      withInterceptors([authInterceptor, loggingInterceptor])
-    )
-  ]
+  providers: [provideHttpClient(withInterceptors([authInterceptor, loggingInterceptor]))],
 };
 ```
 
@@ -689,8 +681,8 @@ import { forwardRef } from '@angular/core';
 @Injectable({ providedIn: 'root' })
 export class ParentService {
   constructor(
-    @Inject(forwardRef(() => ChildService)) 
-    private child: ChildService
+    @Inject(forwardRef(() => ChildService))
+    private child: ChildService,
   ) {}
 }
 
@@ -757,12 +749,12 @@ import { DestroyRef, Injectable, inject } from '@angular/core';
 @Injectable()
 export class TasksService {
   private destroyRef = inject(DestroyRef);
-  
+
   constructor() {
     const interval = setInterval(() => {
       console.log('Polling...');
     }, 1000);
-    
+
     // Automatický cleanup
     this.destroyRef.onDestroy(() => {
       clearInterval(interval);
@@ -783,11 +775,11 @@ import { interval } from 'rxjs';
 @Injectable()
 export class TasksService {
   private destroyRef = inject(DestroyRef);
-  
+
   constructor() {
     interval(1000)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(val => console.log(val));
+      .subscribe((val) => console.log(val));
     // Automaticky sa unsubscribe pri destroy
   }
 }
@@ -797,8 +789,7 @@ export class TasksService {
 
 ```typescript
 export class TasksComponent {
-  tasks$ = this.tasksService.getTasks()
-    .pipe(takeUntilDestroyed()); // automaticky použije DestroyRef komponentu
+  tasks$ = this.tasksService.getTasks().pipe(takeUntilDestroyed()); // automaticky použije DestroyRef komponentu
 }
 ```
 
@@ -810,11 +801,11 @@ import { Injectable, OnDestroy } from '@angular/core';
 @Injectable()
 export class TasksService implements OnDestroy {
   private subscription: Subscription;
-  
+
   constructor() {
     this.subscription = interval(1000).subscribe();
   }
-  
+
   ngOnDestroy() {
     this.subscription.unsubscribe();
     console.log('Service cleaned up');
@@ -836,22 +827,22 @@ import { TasksService } from './tasks.service';
 
 describe('TasksService', () => {
   let service: TasksService;
-  
+
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TasksService]
+      providers: [TasksService],
     });
     service = TestBed.inject(TasksService);
   });
-  
+
   it('should be created', () => {
     expect(service).toBeTruthy();
   });
-  
+
   it('should add task', () => {
     const task = { title: 'Test', description: 'Test task' };
     service.addTask(task);
-    
+
     expect(service.allTasks().length).toBe(1);
     expect(service.allTasks()[0].title).toBe('Test');
   });
@@ -866,27 +857,22 @@ import { TestBed } from '@angular/core/testing';
 describe('TasksService with dependencies', () => {
   let service: TasksService;
   let loggerSpy: jasmine.SpyObj<LoggingService>;
-  
+
   beforeEach(() => {
     const spy = jasmine.createSpyObj('LoggingService', ['log']);
-    
+
     TestBed.configureTestingModule({
-      providers: [
-        TasksService,
-        { provide: LoggingService, useValue: spy }
-      ]
+      providers: [TasksService, { provide: LoggingService, useValue: spy }],
     });
-    
+
     service = TestBed.inject(TasksService);
     loggerSpy = TestBed.inject(LoggingService) as jasmine.SpyObj<LoggingService>;
   });
-  
+
   it('should log when adding task', () => {
     service.addTask({ title: 'Test', description: 'Test' });
-    
-    expect(loggerSpy.log).toHaveBeenCalledWith(
-      jasmine.stringContaining('Test')
-    );
+
+    expect(loggerSpy.log).toHaveBeenCalledWith(jasmine.stringContaining('Test'));
   });
 });
 ```
@@ -897,9 +883,9 @@ describe('TasksService with dependencies', () => {
 class MockTasksService {
   tasks = signal<Task[]>([]);
   allTasks = this.tasks.asReadonly();
-  
+
   addTask(task: Partial<Task>) {
-    this.tasks.update(tasks => [...tasks, task as Task]);
+    this.tasks.update((tasks) => [...tasks, task as Task]);
   }
 }
 
@@ -907,19 +893,17 @@ describe('TaskComponent', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [TaskComponent],
-      providers: [
-        { provide: TasksService, useClass: MockTasksService }
-      ]
+      providers: [{ provide: TasksService, useClass: MockTasksService }],
     });
   });
-  
+
   it('should display tasks', () => {
     const service = TestBed.inject(TasksService);
     service.addTask({ title: 'Test', description: 'Test' });
-    
+
     const fixture = TestBed.createComponent(TaskComponent);
     fixture.detectChanges();
-    
+
     expect(fixture.nativeElement.textContent).toContain('Test');
   });
 });
@@ -933,28 +917,28 @@ import { HttpClientTestingModule, HttpTestingController } from '@angular/common/
 describe('TasksApiService', () => {
   let service: TasksApiService;
   let httpMock: HttpTestingController;
-  
+
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [TasksApiService]
+      providers: [TasksApiService],
     });
-    
+
     service = TestBed.inject(TasksApiService);
     httpMock = TestBed.inject(HttpTestingController);
   });
-  
+
   afterEach(() => {
     httpMock.verify(); // Overiť, že sa nezostali pending requesty
   });
-  
+
   it('should fetch tasks', () => {
     const mockTasks = [{ id: '1', title: 'Test' }];
-    
-    service.getTasks().subscribe(tasks => {
+
+    service.getTasks().subscribe((tasks) => {
       expect(tasks).toEqual(mockTasks);
     });
-    
+
     const req = httpMock.expectOne('/api/tasks');
     expect(req.request.method).toBe('GET');
     req.flush(mockTasks);
@@ -1053,13 +1037,14 @@ export class TasksComponent {
 ✅ **`@Optional()`** - pre nepovinné závislosti  
 ✅ **`takeUntilDestroyed()`** - automatický cleanup RxJS  
 ✅ **Multi-providers** - pre plugin systémy  
-✅ **Testovanie** - vždy testujte služby v izolácii  
+✅ **Testovanie** - vždy testujte služby v izolácii
 
 ❌ **Nepoužívajte** manuálne inštancie služieb (`new TasksService()`)  
 ❌ **Vyhýbajte sa** poskytovaniu cez `bootstrapApplication` providers  
 ❌ **Pozor** na Element Injector - každá inštancia komponentu = nová inštancia služby  
 ❌ **Vyhýbajte sa** cirkulárnym závisloste - refaktorujte kód  
 ❌ **Nezabúdajte** na cleanup - pamäťové úniky pri subscriptions
+
 - **Hierarchia injektorov** = Platform → Root → Module → Element
 - **Injection tokens** = identifikátory pre injektované hodnoty
 - **Tree-shaking** = optimalizácia cez `providedIn: 'root'`
@@ -1072,6 +1057,7 @@ export class TasksComponent {
 ### Pokročilé techniky
 
 **Lazy služby:**
+
 ```typescript
 // Služba sa vytvorí až pri prvom použití
 @Injectable({ providedIn: 'root' })
@@ -1079,11 +1065,9 @@ export class LazyService {}
 ```
 
 **Factory provider s dependencies:**
+
 ```typescript
-export function tasksServiceFactory(
-  http: HttpClient,
-  config: AppConfig
-) {
+export function tasksServiceFactory(http: HttpClient, config: AppConfig) {
   return new TasksService(http, config.apiUrl);
 }
 
@@ -1091,18 +1075,17 @@ providers: [
   {
     provide: TasksService,
     useFactory: tasksServiceFactory,
-    deps: [HttpClient, AppConfig]
-  }
-]
+    deps: [HttpClient, AppConfig],
+  },
+];
 ```
 
 **Vlastný environment injector:**
+
 ```typescript
 const injector = Injector.create({
-  providers: [
-    { provide: TasksService, useClass: TasksService }
-  ],
-  parent: parentInjector
+  providers: [{ provide: TasksService, useClass: TasksService }],
+  parent: parentInjector,
 });
 
 const service = injector.get(TasksService);

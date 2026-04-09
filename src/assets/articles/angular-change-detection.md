@@ -21,13 +21,14 @@
 
 ## Ako funguje Change Detection v Angulari
 
-Angular obalí celý strom komponentov do tzv. *zóny* (Zone.js). Táto zóna sleduje udalosti (kliknutia, časovače, HTTP odpovede...) a keď sa niečo stane, Angular spustí detekciu zmien:
+Angular obalí celý strom komponentov do tzv. _zóny_ (Zone.js). Táto zóna sleduje udalosti (kliknutia, časovače, HTTP odpovede...) a keď sa niečo stane, Angular spustí detekciu zmien:
 
 1. Prejde všetky komponenty v aplikácii.
 2. Skontroluje všetky template bindingy (`{{ ... }}`, `[prop]`, atď.).
 3. Ak sa hodnota zmenila, aktualizuje DOM.
 
 **Príklad:**
+
 ```typescript
 // Getter v komponente
 get debugOutput() {
@@ -36,6 +37,7 @@ get debugOutput() {
 }
 // V šablóne: {{ debugOutput }}
 ```
+
 Každý klik spustí detekciu zmien vo všetkých komponentoch.
 
 **Poznámka:** V dev móde Angular spúšťa detekciu zmien dvakrát, aby odhalil nežiaduce zmeny počas cyklu (chyba `ExpressionChangedAfterItHasBeenCheckedError`).
@@ -50,6 +52,7 @@ Každý klik spustí detekciu zmien vo všetkých komponentoch.
 - Funkcie v šablóne volajte len ak je to nevyhnutné.
 
 **Príklad zlej praxe:**
+
 ```typescript
 get random() { return Math.random(); }
 // {{ random }} // spôsobí chybu v dev móde
@@ -62,6 +65,7 @@ get random() { return Math.random(); }
 Zone.js sleduje všetky asynchrónne udalosti (aj časovače) a spúšťa detekciu zmien.
 
 **Príklad:**
+
 ```typescript
 import { Component, inject, NgZone } from '@angular/core';
 
@@ -79,6 +83,7 @@ export class CounterComponent {
 	}
 }
 ```
+
 Používajte len ak viete, že daný kód nemá vplyv na UI.
 
 ---
@@ -98,6 +103,7 @@ export class MessagesComponent {}
 ```
 
 **Kedy sa komponent s OnPush kontroluje?**
+
 - Pri zmene vstupov (`@Input`)
 - Pri udalosti v komponente alebo jeho deťoch
 - Pri manuálnom spustení detekcie (`ChangeDetectorRef`)
@@ -112,14 +118,18 @@ export class MessagesComponent {}
 **Signály** (Angular 17+) sú reaktívny spôsob správy dát.
 
 Ak zmeníte hodnotu signálu, Angular vie, že má skontrolovať komponent:
+
 ```typescript
 import { signal } from '@angular/core';
 
 export class CounterComponent {
-	count = signal(0);
-	increment() { this.count.update(c => c + 1); }
+  count = signal(0);
+  increment() {
+    this.count.update((c) => c + 1);
+  }
 }
 ```
+
 V šablóne: `{{ count() }}`
 
 **Signály automaticky spúšťajú detekciu zmien aj v OnPush komponentoch.**
@@ -129,29 +139,32 @@ V šablóne: `{{ count() }}`
 ## Služby, OnPush a signály vs. RxJS
 
 Ak zdieľate dáta medzi OnPush komponentmi cez službu:
+
 - **So signálmi:** všetko funguje automaticky.
 - **Bez signálov:** musíte manuálne spustiť detekciu zmien.
 
 **Príklad služby so signálom:**
+
 ```typescript
 import { signal } from '@angular/core';
 export class MessagesService {
-	private messages = signal<string[]>([]);
-	allMessages = this.messages.asReadonly();
-	addMessage(msg: string) {
-		this.messages.update(arr => [...arr, msg]);
-	}
+  private messages = signal<string[]>([]);
+  allMessages = this.messages.asReadonly();
+  addMessage(msg: string) {
+    this.messages.update((arr) => [...arr, msg]);
+  }
 }
 ```
 
 **Príklad služby bez signálu (RxJS):**
+
 ```typescript
 import { BehaviorSubject } from 'rxjs';
 export class MessagesService {
-	private messages$ = new BehaviorSubject<string[]>([]);
-	addMessage(msg: string) {
-		this.messages$.next([...this.messages$.value, msg]);
-	}
+  private messages$ = new BehaviorSubject<string[]>([]);
+  addMessage(msg: string) {
+    this.messages$.next([...this.messages$.value, msg]);
+  }
 }
 ```
 
@@ -162,26 +175,28 @@ export class MessagesService {
 Ak používate RxJS, v komponente nastavte subscription alebo použite `async` pipe:
 
 **Manuálne:**
+
 ```typescript
 import { ChangeDetectorRef, inject, OnInit } from '@angular/core';
 import { MessagesService } from './messages.service';
 
 export class MessagesListComponent implements OnInit {
-	private cdRef = inject(ChangeDetectorRef);
-	messages: string[] = [];
-	ngOnInit() {
-		this.messagesService.messages$.subscribe(msgs => {
-			this.messages = msgs;
-			this.cdRef.markForCheck();
-		});
-	}
+  private cdRef = inject(ChangeDetectorRef);
+  messages: string[] = [];
+  ngOnInit() {
+    this.messagesService.messages$.subscribe((msgs) => {
+      this.messages = msgs;
+      this.cdRef.markForCheck();
+    });
+  }
 }
 ```
 
 **Elegantne s async pipe:**
+
 ```html
 <ul>
-	<li *ngFor="let msg of messagesService.messages$ | async">{{ msg }}</li>
+  <li *ngFor="let msg of messagesService.messages$ | async">{{ msg }}</li>
 </ul>
 ```
 
@@ -192,15 +207,17 @@ export class MessagesListComponent implements OnInit {
 Od Angular 18 môžete vypnúť Zone.js a používať len signály a event bindingy:
 
 **V angular.json odstráňte polyfill:**
+
 ```json
 "polyfills": []
 ```
 
 **V main.ts:**
+
 ```typescript
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 bootstrapApplication(AppComponent, {
-	providers: [provideExperimentalZonelessChangeDetection()]
+  providers: [provideExperimentalZonelessChangeDetection()],
 });
 ```
 
@@ -217,4 +234,5 @@ bootstrapApplication(AppComponent, {
 - Pri vypnutí Zone.js používajte len signály a event bindingy.
 
 **Kľúčové pojmy:**
+
 - Change Detection, Zone.js, OnPush, Signals, RxJS, BehaviorSubject, async pipe, Zoneless

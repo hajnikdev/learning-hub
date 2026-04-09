@@ -19,13 +19,13 @@
 ```ts
 @Injectable({ providedIn: 'root' })
 export class JsonExporterService {
-	export(data: unknown, filename: string) {
-		const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
-		const link = document.createElement('a');
-		link.href = URL.createObjectURL(blob);
-		link.download = filename;
-		link.click();
-	}
+  export(data: unknown, filename: string) {
+    const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+  }
 }
 ```
 
@@ -38,15 +38,15 @@ export class JsonExporterService {
 
 ```ts
 @Component({
-	selector: 'app-widget',
-	template: `<section class="widget"><ng-content></ng-content></section>`,
+  selector: 'app-widget',
+  template: `<section class="widget"><ng-content></ng-content></section>`,
 })
 export class WidgetComponent {}
 ```
 
 ```html
 <app-widget>
-	<app-weather-content></app-weather-content>
+  <app-weather-content></app-weather-content>
 </app-widget>
 ```
 
@@ -60,17 +60,17 @@ export class WidgetComponent {}
 ```ts
 @Directive()
 export abstract class WidgetBase {
-	exportJson(): void {
-		console.log('exporting...');
-	}
+  exportJson(): void {
+    console.log('exporting...');
+  }
 }
 
 @Component({ selector: 'app-widget', template: '' })
 export class WidgetComponent extends WidgetBase {
-	override exportJson(): void {
-		super.exportJson();
-		console.log('widget export done');
-	}
+  override exportJson(): void {
+    super.exportJson();
+    console.log('widget export done');
+  }
 }
 ```
 
@@ -83,12 +83,12 @@ export class WidgetComponent extends WidgetBase {
 
 ```ts
 export interface WidgetContent {
-	id: string;
+  id: string;
 }
 
 export interface Reloadable {
-	loading: boolean;
-	reload(): void;
+  loading: boolean;
+  reload(): void;
 }
 ```
 
@@ -103,26 +103,26 @@ export interface Reloadable {
 export const RELOADABLE_CONTENT = new InjectionToken<Reloadable>('reloadable-content');
 
 @Component({
-	selector: 'app-weather-content',
-	template: `<p>Weather</p>`,
-	providers: [{ provide: RELOADABLE_CONTENT, useExisting: WeatherContentComponent }],
+  selector: 'app-weather-content',
+  template: `<p>Weather</p>`,
+  providers: [{ provide: RELOADABLE_CONTENT, useExisting: WeatherContentComponent }],
 })
 export class WeatherContentComponent implements Reloadable {
-	loading = false;
-	reload(): void {
-		console.log('polling...');
-	}
+  loading = false;
+  reload(): void {
+    console.log('polling...');
+  }
 }
 ```
 
 ```ts
 @Component({ selector: 'app-widget', template: `<ng-content></ng-content>` })
 export class WidgetComponent implements AfterContentInit {
-	@ContentChild(RELOADABLE_CONTENT) content?: Reloadable;
+  @ContentChild(RELOADABLE_CONTENT) content?: Reloadable;
 
-	ngAfterContentInit() {
-		this.content?.reload();
-	}
+  ngAfterContentInit() {
+    this.content?.reload();
+  }
 }
 ```
 

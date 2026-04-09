@@ -1,4 +1,3 @@
-
 ## Obsah
 
 1. [Zakladne informacie](article/angular-http-client#zakladne-informacie)
@@ -33,7 +32,7 @@ import { bootstrapApplication } from '@angular/platform-browser';
 import { provideHttpClient } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
-	providers: [provideHttpClient()]
+  providers: [provideHttpClient()],
 });
 ```
 
@@ -51,23 +50,25 @@ import { Place } from './place.model';
 
 type PlacesResponse = { places: Place[] };
 
-@Component({ /* ... */ })
+@Component({
+  /* ... */
+})
 export class AvailablePlacesComponent implements OnInit {
-	private http = inject(HttpClient);
-	private destroyRef = inject(DestroyRef);
+  private http = inject(HttpClient);
+  private destroyRef = inject(DestroyRef);
 
-	places = signal<Place[]>([]);
+  places = signal<Place[]>([]);
 
-	ngOnInit(): void {
-		const sub = this.http
-			.get<PlacesResponse>('http://localhost:3000/places')
-			.pipe(map((res) => res.places))
-			.subscribe({
-				next: (places) => this.places.set(places)
-			});
+  ngOnInit(): void {
+    const sub = this.http
+      .get<PlacesResponse>('http://localhost:3000/places')
+      .pipe(map((res) => res.places))
+      .subscribe({
+        next: (places) => this.places.set(places),
+      });
 
-		this.destroyRef.onDestroy(() => sub.unsubscribe());
-	}
+    this.destroyRef.onDestroy(() => sub.unsubscribe());
+  }
 }
 ```
 
@@ -81,22 +82,22 @@ Namiesto samotneho tela odpovede mozes pozorovat celu odpoved alebo eventy.
 import { HttpEvent, HttpEventType, HttpResponse } from '@angular/common/http';
 
 this.http
-	.get<PlacesResponse>('http://localhost:3000/places', {
-		observe: 'response'
-	})
-	.subscribe((res: HttpResponse<PlacesResponse>) => {
-		console.log(res.status, res.body?.places ?? []);
-	});
+  .get<PlacesResponse>('http://localhost:3000/places', {
+    observe: 'response',
+  })
+  .subscribe((res: HttpResponse<PlacesResponse>) => {
+    console.log(res.status, res.body?.places ?? []);
+  });
 
 this.http
-	.get<PlacesResponse>('http://localhost:3000/places', {
-		observe: 'events'
-	})
-	.subscribe((event: HttpEvent<PlacesResponse>) => {
-		if (event.type === HttpEventType.Response) {
-			console.log(event.status, event.body?.places ?? []);
-		}
-	});
+  .get<PlacesResponse>('http://localhost:3000/places', {
+    observe: 'events',
+  })
+  .subscribe((event: HttpEvent<PlacesResponse>) => {
+    if (event.type === HttpEventType.Response) {
+      console.log(event.status, event.body?.places ?? []);
+    }
+  });
 ```
 
 ---
@@ -135,11 +136,9 @@ ngOnInit(): void {
 
 ```html
 @if (isFetching() && !error()) {
-	<p class="fallback-text">Nacitavam miesta...</p>
-}
-
-@if (error()) {
-	<p class="fallback-text">{{ error() }}</p>
+<p class="fallback-text">Nacitavam miesta...</p>
+} @if (error()) {
+<p class="fallback-text">{{ error() }}</p>
 }
 ```
 
@@ -169,11 +168,11 @@ Rovnaky pristup ako pri GET, len iny endpoint a iny text chyb.
 
 ```ts
 this.http
-	.get<PlacesResponse>('http://localhost:3000/user-places')
-	.pipe(map((res) => res.places))
-	.subscribe({
-		next: (places) => this.places.set(places)
-	});
+  .get<PlacesResponse>('http://localhost:3000/user-places')
+  .pipe(map((res) => res.places))
+  .subscribe({
+    next: (places) => this.places.set(places),
+  });
 ```
 
 ---
@@ -192,31 +191,31 @@ type PlacesResponse = { places: Place[] };
 
 @Injectable({ providedIn: 'root' })
 export class PlacesService {
-	private http = inject(HttpClient);
+  private http = inject(HttpClient);
 
-	private fetchPlaces(url: string, errorMessage: string) {
-		return this.http.get<PlacesResponse>(url).pipe(
-			map((res) => res.places),
-			catchError((err) => {
-				console.error(err);
-				return throwError(() => new Error(errorMessage));
-			})
-		);
-	}
+  private fetchPlaces(url: string, errorMessage: string) {
+    return this.http.get<PlacesResponse>(url).pipe(
+      map((res) => res.places),
+      catchError((err) => {
+        console.error(err);
+        return throwError(() => new Error(errorMessage));
+      }),
+    );
+  }
 
-	loadAvailablePlaces() {
-		return this.fetchPlaces(
-			'http://localhost:3000/places',
-			'Nepodarilo sa nacitat dostupne miesta.'
-		);
-	}
+  loadAvailablePlaces() {
+    return this.fetchPlaces(
+      'http://localhost:3000/places',
+      'Nepodarilo sa nacitat dostupne miesta.',
+    );
+  }
 
-	loadUserPlaces() {
-		return this.fetchPlaces(
-			'http://localhost:3000/user-places',
-			'Nepodarilo sa nacitat oblubene miesta.'
-		);
-	}
+  loadUserPlaces() {
+    return this.fetchPlaces(
+      'http://localhost:3000/user-places',
+      'Nepodarilo sa nacitat oblubene miesta.',
+    );
+  }
 }
 ```
 
@@ -269,22 +268,22 @@ import { Injectable, signal } from '@angular/core';
 
 @Injectable({ providedIn: 'root' })
 export class ErrorService {
-	private message = signal('');
-	error = this.message.asReadonly();
+  private message = signal('');
+  error = this.message.asReadonly();
 
-	showError(message: string): void {
-		this.message.set(message);
-	}
+  showError(message: string): void {
+    this.message.set(message);
+  }
 
-	clear(): void {
-		this.message.set('');
-	}
+  clear(): void {
+    this.message.set('');
+  }
 }
 ```
 
 ```html
 @if (error()) {
-	<app-error-modal title="Nastala chyba" [message]="error()" />
+<app-error-modal title="Nastala chyba" [message]="error()" />
 }
 ```
 
@@ -319,28 +318,21 @@ removeUserPlace(place: Place) {
 Interceptor spusti logiku pre kazdy request alebo response.
 
 ```ts
-import {
-	HttpHandlerFn,
-	HttpRequest,
-	HttpEventType
-} from '@angular/common/http';
+import { HttpHandlerFn, HttpRequest, HttpEventType } from '@angular/common/http';
 import { tap } from 'rxjs';
 
-export function loggingInterceptor(
-	req: HttpRequest<unknown>,
-	next: HttpHandlerFn
-) {
-	const cloned = req.clone({
-		headers: req.headers.set('X-DEBUG', 'TESTING')
-	});
+export function loggingInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
+  const cloned = req.clone({
+    headers: req.headers.set('X-DEBUG', 'TESTING'),
+  });
 
-	return next(cloned).pipe(
-		tap((event) => {
-			if (event.type === HttpEventType.Response) {
-				console.log('Response', event.status, event.body);
-			}
-		})
-	);
+  return next(cloned).pipe(
+    tap((event) => {
+      if (event.type === HttpEventType.Response) {
+        console.log('Response', event.status, event.body);
+      }
+    }),
+  );
 }
 ```
 
@@ -348,6 +340,6 @@ export function loggingInterceptor(
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 
 bootstrapApplication(AppComponent, {
-	providers: [provideHttpClient(withInterceptors([loggingInterceptor]))]
+  providers: [provideHttpClient(withInterceptors([loggingInterceptor]))],
 });
 ```

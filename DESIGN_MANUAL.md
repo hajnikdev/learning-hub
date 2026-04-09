@@ -11,6 +11,7 @@
   ```
 - Cards, sections, and lists reduce padding and gap on mobile for better fit.
 - All new features should follow this responsive, rem-based system.
+
 ## Design Manual: Spacing and Units
 
 - All spacing, border-radius, and layout values use rem units for scalability and accessibility.

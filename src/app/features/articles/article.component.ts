@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { marked } from 'marked';
@@ -35,17 +35,17 @@ export class ArticleComponent {
     );
 
     this.sub = combineLatest([this.route.paramMap, this.route.queryParamMap]).subscribe(
-      ([params, queryParams]) => {
+      ([params, queryParams]: [ParamMap, ParamMap]) => {
         const id = params.get('id');
         if (id) {
           const cheatsheet = queryParams.get('cheatsheet');
           const suffix = cheatsheet === 'true' ? '.cheatsheet' : '';
           this.http.get<Article>(`assets/articles/${id}.json`).subscribe({
-            next: (meta) => {
+            next: (meta: Article) => {
               this.http
                 .get(`assets/articles/${id}${suffix}.md`, { responseType: 'text' })
                 .subscribe({
-                  next: (mdContent) => {
+                  next: (mdContent: string) => {
                     this.article.set({
                       ...meta,
                       content: mdContent,
@@ -63,7 +63,7 @@ export class ArticleComponent {
                     if (suffix) {
                       this.http
                         .get(`assets/articles/${id}.md`, { responseType: 'text' })
-                        .subscribe((mdContent) => {
+                        .subscribe((mdContent: string) => {
                           this.article.set({
                             ...meta,
                             content: mdContent,
@@ -83,10 +83,10 @@ export class ArticleComponent {
             },
             error: () => {
               if (suffix) {
-                this.http.get<Article>(`assets/articles/${id}.json`).subscribe((meta) => {
+                this.http.get<Article>(`assets/articles/${id}.json`).subscribe((meta: Article) => {
                   this.http
                     .get(`assets/articles/${id}.md`, { responseType: 'text' })
-                    .subscribe((mdContent) => {
+                    .subscribe((mdContent: string) => {
                       this.article.set({
                         ...meta,
                         content: mdContent,

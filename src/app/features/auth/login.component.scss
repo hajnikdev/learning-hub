@@ -1,0 +1,154 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: #f4f6f9;
+}
+
+.auth-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.1);
+  padding: 2.5rem 2rem;
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+
+  &__label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.35rem;
+    color: #444;
+  }
+
+  &__input {
+    padding: 0.6rem 0.75rem;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+
+    &:focus {
+      outline: none;
+      border-color: #1976d2;
+    }
+
+    &--invalid {
+      border-color: #d32f2f;
+    }
+  }
+
+  &__error {
+    font-size: 0.8rem;
+    color: #d32f2f;
+    margin-top: 0.3rem;
+  }
+}
+
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &--primary {
+    background: #1976d2;
+    color: #fff;
+    font-weight: 600;
+
+    &:hover:not(:disabled) {
+      background: #1565c0;
+    }
+  }
+
+  &--google {
+    background: #fff;
+    color: #222;
+    border: 1px solid #ccc;
+    margin-top: 0;
+
+    &:hover:not(:disabled) {
+      background: #f5f5f5;
+    }
+  }
+}
+
+.google-icon {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+  color: #999;
+  font-size: 0.875rem;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.25rem;
+  font-size: 0.9rem;
+
+  &--error {
+    background: #fdecea;
+    color: #c62828;
+    border: 1px solid #f5c6c6;
+  }
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.9rem;
+  color: #555;
+
+  a {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

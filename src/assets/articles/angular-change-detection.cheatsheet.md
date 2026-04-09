@@ -1,7 +1,7 @@
-
 # Angular Change Detection – Cheatsheet
 
 ## Kľúčové pojmy
+
 - **Change Detection**: Automatická aktualizácia DOM pri zmene dát.
 - **Zone.js**: Sleduje asynchrónne udalosti a spúšťa detekciu zmien.
 - **OnPush**: Stratégia detekcie zmien, ktorá kontroluje komponent len pri zmene vstupov, udalosti alebo signálu.
@@ -14,6 +14,7 @@
 ## Najčastejšie vzory a odporúčania
 
 ### 1. Vyhnite sa náročným výpočtom v šablónach
+
 ```typescript
 // Zlá prax
 get random() { return Math.random(); }
@@ -21,6 +22,7 @@ get random() { return Math.random(); }
 ```
 
 ### 2. OnPush stratégia
+
 ```typescript
 @Component({
 	...,
@@ -29,6 +31,7 @@ get random() { return Math.random(); }
 ```
 
 ### 3. Signály
+
 ```typescript
 import { signal } from '@angular/core';
 count = signal(0);
@@ -37,6 +40,7 @@ increment() { count.update(c => c + 1); }
 ```
 
 ### 4. Služba so signálom
+
 ```typescript
 private messages = signal<string[]>([]);
 allMessages = messages.asReadonly();
@@ -46,6 +50,7 @@ addMessage(msg: string) {
 ```
 
 ### 5. Služba s RxJS
+
 ```typescript
 private messages$ = new BehaviorSubject<string[]>([]);
 addMessage(msg: string) {
@@ -54,6 +59,7 @@ addMessage(msg: string) {
 ```
 
 ### 6. RxJS v komponente
+
 ```typescript
 // Manuálne
 messagesService.messages$.subscribe(msgs => {
@@ -68,6 +74,7 @@ messagesService.messages$.subscribe(msgs => {
 ```
 
 ### 7. runOutsideAngular
+
 ```typescript
 zone.runOutsideAngular(() => {
 	setTimeout(() => { ... }, 5000);
@@ -75,16 +82,18 @@ zone.runOutsideAngular(() => {
 ```
 
 ### 8. Zoneless Change Detection (Angular 18+)
+
 ```typescript
 import { provideExperimentalZonelessChangeDetection } from '@angular/core';
 bootstrapApplication(AppComponent, {
-	providers: [provideExperimentalZonelessChangeDetection()]
+  providers: [provideExperimentalZonelessChangeDetection()],
 });
 ```
 
 ---
 
 ## Best Practices
+
 - Preferujte **OnPush** pre komponenty.
 - Používajte **signály** na reaktívnu správu dát.
 - Pri RxJS preferujte **async pipe**.

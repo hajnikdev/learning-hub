@@ -1,10 +1,13 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners, isDevMode } from '@angular/core';
 import { provideRouter, withInMemoryScrolling } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
+import { initializeApp, FirebaseApp } from 'firebase/app';
+import { environment } from '../environment.local';
+
+export const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,9 +20,10 @@ export const appConfig: ApplicationConfig = {
       }),
     ),
     provideClientHydration(withEventReplay()),
-    provideHttpClient(withFetch()), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          }),
+    provideHttpClient(withFetch()),
+    provideServiceWorker('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000',
+    }),
   ],
 };

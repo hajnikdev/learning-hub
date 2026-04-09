@@ -1,4 +1,3 @@
-
 ## Angular Testing Cheatsheet
 
 ### Základné pojmy

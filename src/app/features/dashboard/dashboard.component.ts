@@ -12,7 +12,7 @@ export class DashboardComponent {
   topics = signal<Topic[]>([]);
 
   constructor(private topicsService: TopicsService) {
-    this.topicsService.getTopics().subscribe((topics) => {
+    this.topicsService.getTopics().subscribe((topics: Topic[]) => {
       this.topics.set(topics);
     });
   }
