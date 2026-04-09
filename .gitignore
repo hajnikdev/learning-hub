@@ -44,4 +44,4 @@ __screenshots__/
 Thumbs.db
 
 # Custom ignores
-src/environment.ts
+/src/environment.ts
