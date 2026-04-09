@@ -5,7 +5,7 @@ import { provideClientHydration, withEventReplay } from '@angular/platform-brows
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideServiceWorker } from '@angular/service-worker';
 import { initializeApp, FirebaseApp } from 'firebase/app';
-import { environment } from '../environment.local';
+import { environment } from '../environment';
 
 export const firebaseApp: FirebaseApp = initializeApp(environment.firebase);
 

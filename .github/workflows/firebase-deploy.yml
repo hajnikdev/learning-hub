@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      FIREBASE_WEB_CONFIG_JSON: ${{ secrets.FIREBASE_WEB_CONFIG_JSON }}
 
     steps:
       - name: Checkout
@@ -22,6 +24,40 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Generate environment.local.ts from FIREBASE_WEB_CONFIG_JSON
+        id: firebase_config
+        run: |
+          node <<'NODE'
+          const fs = require('fs');
+
+          const raw = process.env.FIREBASE_WEB_CONFIG_JSON;
+          if (!raw) {
+            throw new Error('FIREBASE_WEB_CONFIG_JSON is missing or empty.');
+          }
+
+          const config = JSON.parse(raw);
+          const required = ['apiKey', 'authDomain', 'projectId', 'storageBucket', 'messagingSenderId', 'appId'];
+          const missing = required.filter((key) => !config[key]);
+          if (missing.length) {
+            throw new Error('Missing Firebase config keys: ' + missing.join(', '));
+          }
+
+          const content = `export const environment = {
+            production: false,
+            firebase: {
+              apiKey: '${config.apiKey}',
+              authDomain: '${config.authDomain}',
+              projectId: '${config.projectId}',
+              storageBucket: '${config.storageBucket}',
+              messagingSenderId: '${config.messagingSenderId}',
+              appId: '${config.appId}',
+            },
+          };\n`;
+
+          fs.writeFileSync('src/environment.local.ts', content);
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `projectId=${config.projectId}\n`);
+          NODE
+
       - name: Build Angular
         run: npm run build
 
@@ -30,5 +66,5 @@ jobs:
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
           firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
-          projectId: learning-hub-27758
+          projectId: ${{ steps.firebase_config.outputs.projectId }}
           channelId: live
