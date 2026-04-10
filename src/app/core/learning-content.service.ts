@@ -169,7 +169,15 @@ export class LearningContentService {
             );
             const sections = (topic.sections || [])
               .slice()
-              .sort((left, right) => left.order - right.order || left.title.localeCompare(right.title))
+              .sort((left, right) => {
+                // Empty titles (ungrouped) should come first
+                const leftIsEmpty = left.title.trim() === '';
+                const rightIsEmpty = right.title.trim() === '';
+                if (leftIsEmpty && !rightIsEmpty) return -1;
+                if (!leftIsEmpty && rightIsEmpty) return 1;
+                // Otherwise sort by order and title
+                return left.order - right.order || left.title.localeCompare(right.title);
+              })
               .map((section, index) => {
                 const sectionArticles = section.articleIds
                   .map((articleId) => articlesById.get(articleId))
@@ -183,13 +191,10 @@ export class LearningContentService {
                     content: article.content,
                   }));
 
-                const isDefaultFirstSectionTitle =
-                  index === 0 &&
-                  (section.title.trim() === '' || section.title.trim().toLowerCase() === 'general');
-
+                // Keep empty titles as-is for ungrouped articles
                 return {
                   id: section.id,
-                  title: isDefaultFirstSectionTitle ? '' : section.title,
+                  title: section.title,
                   articles: sectionArticles,
                 };
               });
@@ -414,9 +419,10 @@ export class LearningContentService {
   async createSection(topicId: string, title: string): Promise<void> {
     const currentUserUid = this.requireCurrentUserUid();
     const normalizedTitle = title.trim();
-    if (!normalizedTitle) {
-      throw new Error('Group title is required.');
-    }
+    // Allow empty titles for ungrouped articles
+    // if (!normalizedTitle) {
+    //   throw new Error('Group title is required.');
+    // }
 
     const topicRef = doc(this.db, 'topics', topicId);
     const topicSnapshot = await getDoc(topicRef);
@@ -434,7 +440,7 @@ export class LearningContentService {
         ? 0
         : Math.max(...topic.sections.map((section) => section.order)) + 1;
 
-    const sectionId = this.createId(normalizedTitle, 'section');
+    const sectionId = this.createId(normalizedTitle || 'ungrouped', 'section');
     const nextSections = [...topic.sections, { id: sectionId, title: normalizedTitle, order: nextOrder, articleIds: [] }];
 
     await setDoc(topicRef, { sections: nextSections }, { merge: true });

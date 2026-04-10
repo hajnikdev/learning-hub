@@ -1,4 +1,4 @@
-import { Component, PLATFORM_ID, effect, inject } from '@angular/core';
+import { Component, PLATFORM_ID, effect, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService } from './core/auth.service';
@@ -15,6 +15,22 @@ export class App {
   private router = inject(Router);
   private platformId = inject(PLATFORM_ID);
   private redirectedAfterRefresh = false;
+  
+  // Mobile menu state
+  mobileMenuOpen = signal(false);
+  
+  toggleMobileMenu() {
+    this.mobileMenuOpen.update(v => !v);
+  }
+  
+  closeMobileMenu() {
+    this.mobileMenuOpen.set(false);
+  }
+  
+  logout() {
+    this.authService.logout();
+    this.closeMobileMenu();
+  }
 
   constructor() {
     effect(() => {

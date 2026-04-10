@@ -3,12 +3,45 @@
 } @else {
   @if (authService.isLoggedIn) {
     <nav class="app-nav">
-      <a class="app-nav__brand" routerLink="/">Learning Hub</a>
-      <div class="app-nav__actions">
+      <a class="app-nav__brand" routerLink="/" (click)="closeMobileMenu()">Learning Hub</a>
+      
+      <!-- Desktop actions -->
+      <div class="app-nav__actions app-nav__actions--desktop">
         <span class="app-nav__user">{{ authService.currentUser()?.email }}</span>
         <button class="app-nav__logout" (click)="authService.logout()">Sign Out</button>
       </div>
+      
+      <!-- Mobile hamburger menu -->
+      <button 
+        class="app-nav__hamburger" 
+        (click)="toggleMobileMenu()"
+        [attr.aria-expanded]="mobileMenuOpen()"
+        aria-label="Toggle menu"
+      >
+        <span class="hamburger-icon"></span>
+      </button>
     </nav>
+    
+    <!-- Mobile menu overlay -->
+    @if (mobileMenuOpen()) {
+      <div class="mobile-menu-overlay" (click)="closeMobileMenu()">
+        <div class="mobile-menu" (click)="$event.stopPropagation()">
+          <div class="mobile-menu__user">
+            <svg class="mobile-menu__user-icon" width="40" height="40" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="8" r="4" fill="currentColor" opacity="0.3"/>
+              <path d="M12 12c-3.5 0-6 2-6 4v2h12v-2c0-2-2.5-4-6-4z" fill="currentColor" opacity="0.3"/>
+            </svg>
+            <span class="mobile-menu__user-email">{{ authService.currentUser()?.email }}</span>
+          </div>
+          <button class="mobile-menu__logout" (click)="logout()">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/>
+            </svg>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    }
   }
 
   <main class="app-content" [class.app-content--with-nav]="authService.isLoggedIn">

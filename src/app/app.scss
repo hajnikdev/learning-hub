@@ -8,15 +8,19 @@
 .app-nav {
   position: sticky;
   top: 0;
-  z-index: 20;
+  z-index: var(--z-nav);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 1.5rem;
-  height: 56px;
-  background: #1976d2;
+  padding: 0 var(--page-padding-x-desktop);
+  height: var(--nav-height);
+  background: var(--color-primary);
   color: #fff;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: var(--shadow-nav);
+
+  @media (max-width: 768px) {
+    padding: 0 var(--page-padding-x-mobile);
+  }
 
   &__brand {
     font-size: 1.1rem;
@@ -29,11 +33,17 @@
   &__actions {
     display: flex;
     align-items: center;
-    gap: 1rem;
+    gap: var(--space-base);
+    
+    &--desktop {
+      @media (max-width: 768px) {
+        display: none;
+      }
+    }
   }
 
   &__user {
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     opacity: 0.9;
   }
 
@@ -42,13 +52,166 @@
     border: 1px solid rgba(255, 255, 255, 0.4);
     color: #fff;
     padding: 0.35rem 0.85rem;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     cursor: pointer;
-    font-size: 0.875rem;
-    transition: background 0.2s;
+    font-size: var(--font-size-sm);
+    transition: background var(--transition-base);
 
     &:hover {
       background: rgba(255, 255, 255, 0.25);
+    }
+  }
+
+  // Hamburger menu button
+  &__hamburger {
+    display: none;
+    background: transparent;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: var(--space-sm);
+    width: 40px;
+    height: 40px;
+    position: relative;
+    
+    @media (max-width: 768px) {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .hamburger-icon {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      position: relative;
+      transition: background var(--transition-base);
+
+      &::before,
+      &::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        width: 24px;
+        height: 2px;
+        background: #fff;
+        transition: transform var(--transition-base);
+      }
+
+      &::before {
+        top: -8px;
+      }
+
+      &::after {
+        bottom: -8px;
+      }
+    }
+
+    &[aria-expanded='true'] .hamburger-icon {
+      background: transparent;
+
+      &::before {
+        transform: translateY(8px) rotate(45deg);
+      }
+
+      &::after {
+        transform: translateY(-8px) rotate(-45deg);
+      }
+    }
+  }
+}
+
+// Mobile menu overlay
+.mobile-menu-overlay {
+  display: none;
+  position: fixed;
+  top: var(--nav-height);
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 15;
+  animation: fadeIn var(--transition-fast);
+
+  @media (max-width: 768px) {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.mobile-menu {
+  background: #fff;
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-xl);
+  margin: 0 var(--page-padding-x-mobile);
+  animation: slideDown var(--transition-base);
+
+  @keyframes slideDown {
+    from {
+      transform: translateY(-20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: var(--space-base);
+    padding: var(--space-base);
+    background: var(--color-bg-page);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-base);
+  }
+
+  &__user-icon {
+    color: var(--color-primary);
+    flex-shrink: 0;
+  }
+
+  &__user-email {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    width: 100%;
+    background: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-md);
+    padding: var(--space-md) var(--space-base);
+    font-size: var(--font-size-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: background var(--transition-base);
+
+    &:hover {
+      background: var(--color-primary-hover);
+    }
+
+    svg {
+      flex-shrink: 0;
     }
   }
 }
